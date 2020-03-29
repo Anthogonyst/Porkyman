@@ -49,18 +49,18 @@ public enum Type {
 		return type;
 	}
 	
-	public float effective(Type attack, Type def1, Type def2) {
+	public static float effective(Type attack, Type def1, Type def2) {
 		float mult = 1f;
 		mult = effective(mult, attack, def1);
 		mult = effective(mult, attack, def2);
 		return mult;
 	}
 	
-	public float effective(Type attack, Type[] def) {
+	public static float effective(Type attack, Type[] def) {
 		return effective(1f, attack, def);
 	}
 	
-	public float effective(Type attack, Type def1, Type[] def2) {
+	public static float effective(Type attack, Type def1, Type[] def2) {
 		float mult = effective(1f, attack, def1);
 		for (Type t : def2) {
 			mult = effective(mult, attack, t);
@@ -68,13 +68,13 @@ public enum Type {
 		return mult;
 	}
 	
-	public float effective(float mult, Type attack, Type def) {
-		if (attack.getVal() == -1 || def.getVal() == -1)
+	public static float effective(float mult, Type attack, Type def) {
+		if (attack.getVal() != -1 && def.getVal() != -1)
 			return mult * eff[attack.getVal()][def.getVal()] / 2;
 		else return mult;
 	}
 	
-	public float effective(float mult, Type attack, Type[] def) {
+	public static float effective(float mult, Type attack, Type[] def) {
 		for (Type t : def) {
 			mult = effective(mult, attack, t);
 		}

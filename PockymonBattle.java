@@ -73,6 +73,7 @@ public class PockymonBattle {
 					verb = p.getPockymon().getSkill(0);
 				}
 				
+				// TODO: Make target reticle on other instead of hitting yourself
 				Pockymon[] fake = new Pockymon[1];
 				fake[0] = p.getPockymon();
 				verb.doSomething(p.getPockymon(), fake);

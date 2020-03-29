@@ -15,13 +15,14 @@ public class StringSkill extends Skill {
 	@Override
 	protected boolean doIt(Pockymon caster, Pockymon... targets) {
 		for (Pockymon p : targets) {
-			System.out.println(p + " catches ow in the magnitude of " + calculateDamage());
-			//p.modHP(calculateDamage());
+			int damage = calculateDamage(Type.effective(Type.NORMAL, p.getType1(), p.getType2()));
+			System.out.println(p.getNickname() + " catches ow in the magnitude of " + damage);
+			p.modHP(damage);
 		}
 		return true;
 	}
 	
-	private int calculateDamage() {
+	private int calculateDamage(float f) {
 		int sum_char = 0;
 		String s = getName();
 		
@@ -29,7 +30,7 @@ public class StringSkill extends Skill {
 		for (int i = 0; i < s.length(); i++) {
 			sum_char += (int)s.charAt(i);
 		}
-		sum_char /= s.length();
+		sum_char *= f / s.length();
 		
 		// Negative bell curve
 		sum_char = (int)Math.floor(-40*Math.exp(-.025*Math.pow(sum_char-105, 2)) - 30);
