@@ -8,7 +8,7 @@ public class NullItem implements IItem {
 	}
 
 	@Override
-	public boolean validate() {
+	public boolean validate(Object o) {
 		return false;
 	}
 
@@ -18,7 +18,13 @@ public class NullItem implements IItem {
 	}
 
 	@Override
+	public Target getTarget() {
+		return Target.NONE;
+	}
+	
+	@Override
 	public String toString() {
 		return "NULL ITEM";
 	}
+
 }

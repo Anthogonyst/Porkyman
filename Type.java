@@ -1,6 +1,6 @@
 package Maestus.Porkyman;
 
-public enum Type {
+enum Type {
 	NORMAL(0),
 	FIRE(1),
 	WATER(2),
@@ -69,7 +69,8 @@ public enum Type {
 	}
 	
 	public static float effective(float mult, Type attack, Type def) {
-		if (attack.getVal() != -1 && def.getVal() != -1)
+		if (attack.getVal() != -1 &&
+				def.getVal() != -1)
 			return mult * eff[attack.getVal()][def.getVal()] / 2;
 		else return mult;
 	}

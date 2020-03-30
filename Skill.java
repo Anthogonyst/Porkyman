@@ -4,21 +4,13 @@ public abstract class Skill implements IAction {
 	private String name;
 	private Type type;
 	private int maxPP;
+	private Target target;
 	
 	public boolean doSomething(Pockymon caster, Pockymon... targets) {
-		if (validate()) {
+		if (validate(caster)) {
 			return doIt(caster, targets);
 		}
-		return validate();
-		
-		/*
-		 * 
-		IAction temp;
-		validateChoice();
-		temp = skills.get(i);
-		temp.doSomething(this, this, other);
-		speak();
-		 */
+		return false;
 	}
 	
 	abstract boolean doIt(Pockymon caster, Pockymon... targets);
@@ -27,23 +19,29 @@ public abstract class Skill implements IAction {
 	public String getName() { return name; }
 	public Type getType() { return type; }
 	public int getMaxPP() { return maxPP; }
+	public Target getTarget() { return target; }
 	
 	/// Constructors
 	public Skill() {
 		name = "NULL";
 		type = Type.NULL;
 		maxPP = -1;
+		target = Target.NONE;
 	}
 	
-	public Skill(String n, Type t, int pp) {
+	public Skill(String n, Type t, int pp, Target who) {
 		name = n;
 		type = t;
 		maxPP = pp;
+		target = who;
 	}
 	
-	public boolean validate() {
+	public boolean validate(Object caster) {
 		// TODO: Ideally check that the pokemon is healthy and awake here
-		return yourTurn;
+		Pockymon p = (Pockymon)caster;
+		if (p.checkAlive() && p.getPP(p.lookupAttack(name)) > 0)
+			return yourTurn;
+		else return false;
 	}
 	
 	@Override

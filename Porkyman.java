@@ -159,7 +159,8 @@ public abstract class Porkyman {
 			return false;
 		}
 	}
-	
+
+	@Override
 	public String toString() {
 		String s = "#" + porkyDex + ":  " + nickname + "\t\t" + type1 + " | " + type2 + "\t\tHP:  " + hp + "/" + stats[0] + "\n";
 		for (int i = 1; i < 6; i++) {

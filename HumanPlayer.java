@@ -3,7 +3,7 @@ package Maestus.Porkyman;
 public class HumanPlayer extends Player {
 
 	private final Pockymon pokeball;
-	private final IItem tool;
+	private IItem tool;
 	
 	public HumanPlayer(Pockymon pokeball, IItem tool) {
 		super(true);
@@ -18,6 +18,9 @@ public class HumanPlayer extends Player {
 
 	@Override
 	public IItem getItem() {
+		if (tool.depleteItem()) {
+			tool = new NullItem();
+		}
 		return tool;
 	}
 	

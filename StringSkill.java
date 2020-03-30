@@ -1,30 +1,33 @@
 package Maestus.Porkyman;
 
-import java.util.Random;
-
 public class StringSkill extends Skill {
 
 	public StringSkill() {
-		super(randomName(), Type.NORMAL, 20);
+		super(randomName(), Type.NORMAL, 20, Target.FOE);
 	}
 	
 	public StringSkill(String n) {
-		super(n, Type.NORMAL, 20);
+		super(n, Type.NORMAL, 20, Target.FOE);
 	}
 	
 	@Override
-	protected boolean doIt(Pockymon caster, Pockymon... targets) {
-		for (Pockymon p : targets) {
-			int damage = calculateDamage(Type.effective(Type.NORMAL, p.getType1(), p.getType2()));
-			System.out.println(p.getNickname() + " catches ow in the magnitude of " + damage);
-			p.modHP(damage);
-		}
+	boolean doIt(Pockymon caster, Pockymon... targets) {
+		int damage = calculateDamage(Type.effective(Type.NORMAL, targets[0].getType1(), targets[0].getType2()));
+		System.out.println(targets[0].getNickname() + " catches ow in the magnitude of " + damage + " damage.");
+		targets[0].modHP(damage);
+		
 		return true;
 	}
 	
 	private int calculateDamage(float f) {
 		int sum_char = 0;
 		String s = getName();
+		
+		if (f <= .51f) {
+			System.out.println("It's not very effective...");
+		} else if (f >= 1.99f) {
+			System.out.println("It's super effective!");
+		}
 		
 		// Take average of ascii values
 		for (int i = 0; i < s.length(); i++) {
