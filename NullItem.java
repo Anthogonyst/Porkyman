@@ -4,6 +4,7 @@ public class NullItem implements IItem {
 
 	@Override
 	public boolean doSomething(Pockymon caster, Pockymon... targets) {
+		System.out.println("You are out of this item.");
 		return false;
 	}
 

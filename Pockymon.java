@@ -50,8 +50,20 @@ public abstract class Pockymon {
 	public String getNickname() { return nickname; }
 	public int getNumOfMoves() { return skills.size(); }
 	public int getTeam() { return team; }
-	public int getPP(int i) { if (i > 0 && i < pp.length) return pp[i]; else return -1; }
-	public int[] getAllPP() { return pp; }
+	
+	public int getPP(int i) {
+		if (i >= 0 && i < pp.length) 
+			return pp[i]; 
+		else return -1;
+	}
+	
+	public boolean decrementPP(int i) {
+		if (pp[i] > 0) {
+			pp[i] -= 1;
+			return true;
+		}
+		else return false;
+	}
 	
 	public boolean checkAlive() {
 		if (hp > 0) 
@@ -71,7 +83,6 @@ public abstract class Pockymon {
 	}
 	
 	public int lookupAttack(String s) {
-		// TODO: Test for correctness
 		for (Skill k : skills) {
 			if (k.getName().equals(s)) {
 				return skills.indexOf(k);
@@ -108,16 +119,6 @@ public abstract class Pockymon {
 		} else {
 			String s = "#" + porkyDex + ":  " + nickname + "\t\t" + type1 + " | " + type2 + "\t\tHP:  " + hp + "/" + maxHP + "\n";
 			return s;
-		}
-	}
-	
-	public void printSkills() {
-		System.out.println("Lets try this.");
-		for (Skill s : skills) {
-			System.out.println("Regular print of " + s);
-		}
-		for (int i = 0; i < skills.size(); i++) {
-			System.out.println("i = " + i + " for skill " + skills.get(i));
 		}
 	}
 }

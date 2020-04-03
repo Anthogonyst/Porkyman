@@ -15,7 +15,7 @@ public class Rowlet extends Pockymon {
 	
 	@Override
 	public void attack(Pockymon other) {
-		System.out.println(getNickname() + " pecks the brains out of " + other);
+		System.out.println(getNickname() + " pecks the brains out of " + other.getNickname() + ".");
 	}
 	
 	@Override

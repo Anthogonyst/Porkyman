@@ -9,17 +9,12 @@ public abstract class Skill implements IAction {
 	public boolean doSomething(Pockymon caster, Pockymon... targets) {
 		if (validate(caster)) {
 			return doIt(caster, targets);
+		} else {
+			System.out.println(caster.getNickname() + " tries to do something but hurts themself in the process.");
+			caster.modHP(-5);
+			return false;
 		}
-		return false;
 	}
-	
-	abstract boolean doIt(Pockymon caster, Pockymon... targets);
-	
-	/// Getters
-	public String getName() { return name; }
-	public Type getType() { return type; }
-	public int getMaxPP() { return maxPP; }
-	public Target getTarget() { return target; }
 	
 	/// Constructors
 	public Skill() {
@@ -35,13 +30,27 @@ public abstract class Skill implements IAction {
 		maxPP = pp;
 		target = who;
 	}
+
+	abstract boolean doIt(Pockymon caster, Pockymon... targets);
+	
+	/// Getters
+	public String getName() { return name; }
+	public int getMaxPP() { return maxPP; }
+	public Target getTarget() { return target; }
+	protected Type getType() { return type; }
 	
 	public boolean validate(Object caster) {
-		// TODO: Ideally check that the pokemon is healthy and awake here
 		Pockymon p = (Pockymon)caster;
-		if (p.checkAlive() && p.getPP(p.lookupAttack(name)) > 0)
+		int n = p.lookupAttack(name);
+		
+		if (p.checkAlive() && p.getPP(n) > 0) {
+			p.decrementPP(n);
 			return yourTurn;
-		else return false;
+		}
+		else {
+			System.out.println("But " + p.getNickname() + " is too tired...");
+			return false;
+		}
 	}
 	
 	@Override

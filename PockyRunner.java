@@ -1,19 +1,21 @@
 package Maestus.Porkyman;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PorkyRunner {
+public class PockyRunner {
 
 	private static Scanner sn;
+	private static boolean askNickname;
 	private static int[] availablePockymon = { 157, 258, 722, 727 };
 	private static String[] availablePockymonNames = { "Typhlosion", "Mudkip", "Rowlet", "Incineroar" };
 	
 	public static void main(String[] args) {
-		List<Player> theHungerGames = new ArrayList<Player>();
+		List<Player> theHungerGames = new LinkedList<Player>();
 		sn = new Scanner(System.in);
 		int team = 0;
+		askNickname = true;
 		
 		System.out.println("Welcome to Pockymon Coliseum! How many players are we expecting today?");
 		int n = requestNum();
@@ -40,36 +42,55 @@ public class PorkyRunner {
 
 	private static Player makeHumanPlayer(int team) {
 		int pokeball = requestPockymon();
+		askNickname = true;
 		return new HumanPlayer(generatePockymon(pokeball, team), new HiPotion());
 	}
 	
 	private static Player makeComputerPlayer(int team) {
-		int rand = (int)(availablePockymon.length * Math.ceil(Math.random()) % availablePockymon.length);
-		return new ComputerPlayer(generatePockymon(rand, team), new HiPotion());
+		int rand = (int)(Math.ceil(availablePockymon.length * Math.random()) % availablePockymon.length);
+		// Maybe naming the enemy's pokemon would be funny?
+		askNickname = false;
+		return new ComputerPlayer(generatePockymon(availablePockymon[rand], team), new HiPotion());
 	}
 	
 	private static Pockymon generatePockymon(int n, int team) {
-		final List<Skill> doStuff = new ArrayList<Skill>();
+		String nickname = "";
+		final List<Skill> doStuff = new LinkedList<Skill>();
 		doStuff.add(new StringSkill());
 		doStuff.add(new StringSkill());
 		doStuff.add(new StringSkill());
 		
+		if (askNickname)
+			nickname = requestNickname();
+		
 		switch (n) {
 		case 157: {
+			if (nickname.equals(""))
+				nickname = "Tyco";
+			
 			doStuff.add(new Eruption());
-			return new Typhlosion("Tyco", doStuff, team);
+			return new Typhlosion(nickname, doStuff, team);
 		}
 		case 258: {
+			if (nickname.equals(""))
+				nickname = "Mudkipz";
+			
 			doStuff.add(new BubbleBeam());
-			return new Mudkip("Mudkipz", doStuff, team);
+			return new Mudkip(nickname, doStuff, team);
 		}
 		case 722: {
+			if (nickname.equals(""))
+				nickname = "Birb";
+			
 			doStuff.add(new Synthesis());
-			return new Rowlet("Birb", doStuff, team);
+			return new Rowlet(nickname, doStuff, team);
 		}
 		case 727: {
+			if (nickname.equals(""))
+				nickname = "Barcat Barcat";
+			
 			doStuff.add(new DarkestLariat());
-			return new Incineroar("Barcat Barcat", doStuff, team);
+			return new Incineroar(nickname, doStuff, team);
 		}
 		default: {
 			doStuff.add(new Eruption());
@@ -142,5 +163,16 @@ public class PorkyRunner {
 		} while (!done);
 		
 		return -1;
+	}
+	
+	private static String requestNickname() {
+		String s = null;
+		boolean done = false;
+		System.out.println("Mmmm yes, and what might be its wonderful name?");
+		
+		do {
+			s = sn.nextLine();
+			return s;
+		} while (!done);
 	}
 }

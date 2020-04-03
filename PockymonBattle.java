@@ -1,7 +1,6 @@
 package Maestus.Porkyman;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,13 +29,8 @@ public class PockymonBattle {
 		participants = new Player[players.length];
 		
 		for (Player p : players) {
-			System.out.println(p);
 			initializePlayer(p, playerCount);
 			playerCount++;
-		}
-		
-		for (Player p: players) {
-			p.getPockymon().printSkills();
 		}
 	}
 	
@@ -67,43 +61,65 @@ public class PockymonBattle {
 		if (finish)
 			return;
 		
+		System.out.println("=======================================");
 		for (Player p : participants) {
+			boolean turnComplete = false;
 			if (p.getPockymon().checkAlive()) {
-				System.out.println(p.getPockymon().print(p.isHuman()));
-				IAction verb;
-				Pockymon[] affectedTargets;
-				
-				int choice;
-				if (p.isHuman()) {
-					if (!p.getItem().equals(new NullItem()))
-						System.out.println(p.getItem());
+				//while (!turnComplete) {
+					System.out.println(p.getPockymon().print(p.isHuman()));
+					IAction verb;
+					Pockymon[] affectedTargets;
 					
-					choice = requestChoice(p);
-				} else {
-					choice = (int)(Math.ceil(p.getPockymon().getNumOfMoves() * Math.random()) % p.getPockymon().getNumOfMoves());
-					System.out.println(choice + " is what they chose.");
-				}
-
-				if (choice >= 0 && choice < p.getPockymon().getNumOfMoves()) {
-					verb = p.getPockymon().getSkill(choice);
-				} else if (choice == p.getPockymon().getNumOfMoves()) {
-					verb = p.getItem();
-				} else {
-					// Default path for running and malformed response
-					System.out.println("What?");
-					p.run();
-					continue;
-				}
+					int choice;
+					if (p.isHuman()) {
+						if (!p.getItem().equals(new NullItem()))
+							System.out.println(p.getItem());
+						
+						choice = requestChoice(p);
+					} else {
+						// TODO: Implement Fisher-Yates shuffle here to produce unique results for cycling
+						// This would be necessary to success-check a move before execution
+						choice = (int)(Math.ceil(p.getPockymon().getNumOfMoves() * Math.random()) % p.getPockymon().getNumOfMoves());
+					}
+					
+					if (choice >= 0 && choice < p.getPockymon().getNumOfMoves()) {
+						verb = p.getPockymon().getSkill(choice);
+					} else if (choice == p.getPockymon().getNumOfMoves()) {
+						verb = p.getItem();
+					} else {
+						// Default path for running and malformed response
+						System.out.println("What?");
+						p.run();
+						continue;
+					}
 				
-				System.out.println("Try to do this: " + verb);
-				p.getPockymon().printSkills();
-				affectedTargets = requestTarget(p, verb);
-				System.out.println("Targets: " + affectedTargets);
-				verb.doSomething(p.getPockymon(), affectedTargets);
+					affectedTargets = requestTarget(p, verb);
+					turnComplete = verb.doSomething(p.getPockymon(), affectedTargets);
+					
+					if (!p.getPockymon().checkAlive()) {
+						turnComplete = true;
+					}
+					
+					if (!turnComplete) {
+						boolean completelyExhausted = true;
+						
+						for (int i = 0; i < p.getPockymon().getNumOfMoves(); i++) {
+							if (p.getPockymon().getPP(i) > 0)
+								completelyExhausted = false;
+						}
+						
+						if (completelyExhausted) {
+							System.out.println(p.getPockymon().getNickname() + " passes out from sheer exhaustion.");
+							p.getPockymon().modHP(-999);
+						}
+					}
+				//}
+			}
+			else {
+				turnComplete = true;
 			}
 		}
 		
-		testWinConditions();
 		battleLoop();
 	}
 	
@@ -120,13 +136,11 @@ public class PockymonBattle {
 		}
 		
 		o.add(p.getItem().toString().trim());
+		i = f;
+		k.add(i);
+		o.add(new String("Run"));
 		i++;
 		k.add(i);
-		o.add("Run");
-		i++;
-		k.add(i);
-		
-		System.out.println(Arrays.deepToString(o.toArray()));
 		
 		options.put(p, o);
 		skillNum.put(o, k);
@@ -158,7 +172,7 @@ public class PockymonBattle {
 			
 			try {
 				n = Integer.parseInt(s);
-				if (n >= 0 && n <= p.getPockymon().getNumOfMoves()) {
+				if (n >= 0 && n <= p.getPockymon().getNumOfMoves() + 1) {
 					return n;
 				}
 			} catch (NumberFormatException nfe) {
@@ -214,24 +228,30 @@ public class PockymonBattle {
 			// TODO: Scan for player choice instead of randomly picking enemy
 			// ...or the battle is too furious to coordinate exact commands?
 			Pockymon[] enemy = new Pockymon[1];
+			int[] rando = new int[participants.length];
 			
-			for (int i = 0; i < 20; i++) {
-				int rand = (int)(Math.ceil(participants.length * Math.random()) % participants.length);
-				if (participants[rand].getPockymon().getTeam() != thisTeam) {
-					enemy[0] = participants[rand].getPockymon();
-					i = 20;
+			for (int i = 0; i < rando.length; i++) 
+				rando[i] = i;
+
+			// Fisher-Yates shuffle
+			for (int i = rando.length - 1; i > 0; i--) {
+				int n = (int)(Math.ceil(i*Math.random()) % i);
+				int temp = rando[i];
+				rando[i] = rando[n];
+				rando[n] = temp;
+			}
+			
+			for (int i = 0; i < rando.length; i++) {
+				if (participants[rando[i]].getPockymon().getTeam() != thisTeam) {
+					enemy[0] = participants[rando[i]].getPockymon();
+					p.getPockymon().attack(enemy[0]);
+					return enemy;
 				}
 			}
 			
-			if (enemy[0].equals(null)) {
-				System.out.println("Sorry for my laziness. You hit the 1 in a million chance that random couldn't find the enemy.");
-				return null;
-			}
-			
-			// Flavor text
-			p.getPockymon().attack(enemy[0]);
+			System.out.println(p.getPockymon().getNickname() + " couldn't find the enemy.");
+			enemy[0] = new Typhlosion(null, null, -1);
 			return enemy;
-			
 		}
 		case RIVALS: {
 			List<Player> enemies = new LinkedList<Player>();
@@ -262,11 +282,13 @@ public class PockymonBattle {
 		//case ANY: { /* the world is your oyster so pick any one pockymon */ }
 		//case RANDOM: { /* randomly hit one pockymon */ }
 		case NONE: {
-			return null;
+			Pockymon[] none = new Pockymon[0];
+			return none;
 		}
 		default: {
 			System.out.println("Something bad happened in the interface.");
-			return null;
+			Pockymon[] none = new Pockymon[0];
+			return none;
 		}
 		}
 	}
@@ -274,11 +296,10 @@ public class PockymonBattle {
 	private boolean testWinConditions() {
 		int numAlive = participants.length;
 		int testFinish = -1;
+		boolean flag = false;
 		
 		// Testing for teams
-		// TODO: Fix this loop because this doesn't work rn
 		for (Player p : participants) {
-			boolean flag = false;
 			if (!p.getPockymon().checkAlive()) {
 				numAlive--;
 			} else {
@@ -291,21 +312,19 @@ public class PockymonBattle {
 			}
 		}
 		
-		System.out.println("Value of test: " + testFinish + " \t Val of alive: " + numAlive);
-		// Simple tests
-		if (numAlive == 1) {
-			executeWin();
-			return true;
-		} else if (numAlive == 0) {
+		// Test for draw
+		if (numAlive == 0) {
 			executeDraw();
 			return true;
+		} else {
+			executeWin();
+			return true;
 		}
-		
-		return false;
 	}
 	
 	private void executeWin() {
 		for (Player p : participants) {
+			// Check for not living because if your pockymon died, you're the real loser
 			if (p.getPockymon().checkAlive())
 				System.out.println(p.getPockymon().getNickname() + " is the winnner!");
 		}

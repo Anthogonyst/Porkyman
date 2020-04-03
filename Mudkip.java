@@ -15,7 +15,7 @@ public class Mudkip extends Pockymon {
 
 	@Override
 	public void attack(Pockymon other) {
-		System.out.println(getNickname() + " kind of just barely touches " + other + ".");
+		System.out.println(getNickname() + " kind of just barely touches " + other.getNickname() + ".");
 	}
 
 	@Override

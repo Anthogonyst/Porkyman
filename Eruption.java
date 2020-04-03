@@ -9,7 +9,7 @@ public class Eruption extends Skill {
 	@Override
 	boolean doIt(Pockymon caster, Pockymon... targets) {
 		for (Pockymon p : targets) {
-			int damage = calculateDamage(Type.effective(Type.FIRE, p.getType1(), p.getType2()));
+			int damage = calculateDamage(Type.effective(this.getType(), p.getType1(), p.getType2()));
 			System.out.println(p.getNickname() + " is set ablaze for " + damage + " health.");
 			
 			p.modHP(damage);

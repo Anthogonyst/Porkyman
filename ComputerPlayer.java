@@ -26,6 +26,7 @@ public class ComputerPlayer extends Player {
 
 	@Override
 	public void run() {
+		pokeball.modHP(-999);
 		System.out.println("The other player ran away!");
 	}
 

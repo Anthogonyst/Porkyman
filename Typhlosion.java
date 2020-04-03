@@ -15,7 +15,7 @@ public class Typhlosion extends Pockymon {
 
 	@Override
 	public void attack(Pockymon other) {
-		System.out.println(getNickname() + " burns up the competition! " + other + " can't handle the heat!");
+		System.out.println(getNickname() + " burns up the competition! " + other.getNickname() + " can't handle the heat!");
 	}
 
 	@Override

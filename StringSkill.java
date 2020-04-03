@@ -12,7 +12,7 @@ public class StringSkill extends Skill {
 	
 	@Override
 	boolean doIt(Pockymon caster, Pockymon... targets) {
-		int damage = calculateDamage(Type.effective(Type.NORMAL, targets[0].getType1(), targets[0].getType2()));
+		int damage = calculateDamage(Type.effective(this.getType(), targets[0].getType1(), targets[0].getType2()));
 		System.out.println(targets[0].getNickname() + " catches ow in the magnitude of " + damage + " damage.");
 		targets[0].modHP(damage);
 		

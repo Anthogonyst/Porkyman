@@ -8,8 +8,8 @@ public class DarkestLariat extends Skill {
 	
 	@Override
 	boolean doIt(Pockymon caster, Pockymon... targets) {
-		int damage = calculateDamage(Type.effective(Type.DARK, targets[0].getType1(), targets[0].getType2()));
-		System.out.println(targets[0].getNickname() + " is completely bewildered and feels " + damage + " less healthy.");
+		int damage = calculateDamage(Type.effective(this.getType(), targets[0].getType1(), targets[0].getType2()));
+		System.out.println(targets[0].getNickname() + " is completely bewildered and feels " + damage + " hp less healthy.");
 		targets[0].modHP(damage);
 		
 		return true;
