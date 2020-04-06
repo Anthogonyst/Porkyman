@@ -3,8 +3,10 @@ package Maestus.Porkyman;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public abstract class Pockymon {
-	// Required
+
+	// Required components for initialization
 	private final int porkyDex;
 	private final Type type1;
 	private final Type type2;
@@ -12,15 +14,22 @@ public abstract class Pockymon {
 	private final int maxHP;
 	private final List<Skill> skills;
 	
-	// Volatile
+	// Volatile components for battles
 	private boolean alive;
 	private int team;
 	private int hp;
 	private int[] pp;
 
-	public abstract void attack(Pockymon other);
-	public abstract void speak();
-	
+	/**
+	 * Creates a new pockymon with all of the necessary details in its initialization
+	 * @param porkyDex
+	 * @param type1
+	 * @param type2
+	 * @param nickname
+	 * @param max HP
+	 * @param skill set
+	 * @param team
+	 */
 	public Pockymon(int porkyDex, Type type1, Type type2, String nickname, int maxHP, List<Skill> skillset, int team) {
 		super();
 		this.porkyDex = porkyDex;
@@ -45,26 +54,51 @@ public abstract class Pockymon {
 		}
 	}
 
-	public Type getType1() { return type1; }
-	public Type getType2() { return type2; }
+	/**
+	 * Outputs some flavor text to the console
+	 * The logic and function is not contained here
+	 * @param attacked pockymon
+	 */
+	public abstract void attack(Pockymon other);
+	
+	/**
+	 * Outputs the pockymon's voice lines to the console
+	 */
+	public abstract void speak();
+	
+	/**
+	 * Gets the pockymon's nickname
+	 * @return nickname
+	 */
 	public String getNickname() { return nickname; }
+	
+	/**
+	 * Gets the number of moves this pockymon knows
+	 * @return moves count
+	 */
 	public int getNumOfMoves() { return skills.size(); }
+	
+	/**
+	 * The team number that this pockymon is fighting to protecc
+	 * @return team number
+	 */
 	public int getTeam() { return team; }
 	
+	/**
+	 * Gets the pp value of a specific move
+	 * @param skill slot
+	 * @return pp value
+	 */
 	public int getPP(int i) {
 		if (i >= 0 && i < pp.length) 
 			return pp[i]; 
 		else return -1;
 	}
 	
-	public boolean decrementPP(int i) {
-		if (pp[i] > 0) {
-			pp[i] -= 1;
-			return true;
-		}
-		else return false;
-	}
-	
+	/**
+	 * Verifies whether or not that the pockymon is still alive
+	 * @return isAlive
+	 */
 	public boolean checkAlive() {
 		if (hp > 0) 
 			alive = true;
@@ -72,26 +106,34 @@ public abstract class Pockymon {
 		return alive;
 	}
 
+	/**
+	 * Returns the skill in a particular slot
+	 * @param skill slot
+	 * @return skill
+	 */
 	public Skill getSkill(int i) {
 		if (i >= 0 && i < skills.size()) {
 			return skills.get(i);
 		}
 		else {
-			System.out.println(getNickname() + " tried to get invalid skill index.");
 			return new NullSkill();
 		}
 	}
 	
-	public int lookupAttack(String s) {
-		for (Skill k : skills) {
-			if (k.getName().equals(s)) {
-				return skills.indexOf(k);
-			}
-		}
-		return -1;
+	/**
+	 * Terminates the battle for immediate stops
+	 */
+	public void quitFighting() {
+		hp = 0;
+		checkAlive();
 	}
 	
-	public void modHP(int n) {
+	/**
+	 * Modifies the hp value of the pockymon
+	 * Negative values hurts, positive values heal
+	 * @param magnitude
+	 */
+	void modHP(int n) {
 		hp += n;
 		if (hp > maxHP) {
 			hp = maxHP;
@@ -101,11 +143,52 @@ public abstract class Pockymon {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return getNickname();
+	/**
+	 * Gets the first type of a pockymon
+	 * @return type one
+	 */
+	Type getType1() { return type1; }
+	
+	/**
+	 * Gets the second type of a pockymon
+	 * @return type two
+	 */
+	Type getType2() { return type2; }
+	
+	/**
+	 * Consumes pp when a move is executed
+	 * @param skill slot
+	 * @return isValidated
+	 */
+	boolean decrementPP(int i) {
+		if (pp[i] > 0) {
+			pp[i] -= 1;
+			return true;
+		}
+		else return false;
 	}
-
+	
+	/**
+	 * Looks up a skill by name and returns its skill slot
+	 * @param skill name
+	 * @return skill slot
+	 */
+	int lookupAttack(String s) {
+		for (Skill k : skills) {
+			if (k.getName().equals(s)) {
+				return skills.indexOf(k);
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Two options for printing, either long or short
+	 * Long print (true) displays all stats and skills
+	 * Short print (false) displays all stats but not skills
+	 * @param long print
+	 * @return String output
+	 */
 	public String print(boolean prettyPrint) {
 		if (prettyPrint) {
 			String s = "#" + porkyDex + ":  " + nickname + "\t\t" + type1 + " | " + type2 + "\t\tHP:  " + hp + "/" + maxHP + "\n";
@@ -120,5 +203,14 @@ public abstract class Pockymon {
 			String s = "#" + porkyDex + ":  " + nickname + "\t\t" + type1 + " | " + type2 + "\t\tHP:  " + hp + "/" + maxHP + "\n";
 			return s;
 		}
+	}
+	
+	/**
+	 * Subclasses are intended to return species from this method
+	 * But for completeness sake, this returns the nickname of the pockymon if not overriden
+	 */
+	@Override
+	public String toString() {
+		return getNickname();
 	}
 }

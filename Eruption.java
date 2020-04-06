@@ -1,11 +1,24 @@
 package Maestus.Porkyman;
 
+/**
+ * Fire type skill for Typhlosion
+ * @author Oracle
+ *
+ */
 public class Eruption extends Skill {
 
+	/**
+	 * Constructs new skill for pockymon
+	 */
 	public Eruption() {
 		super("Eruption", Type.FIRE, 15, Target.RIVALS);
 	}
 	
+	/**
+	 * Specifies how to execute skill
+	 * Hits multiple targets
+	 * @return turnComplete
+	 */
 	@Override
 	boolean doIt(Pockymon caster, Pockymon... targets) {
 		for (Pockymon p : targets) {
@@ -17,6 +30,11 @@ public class Eruption extends Skill {
 		return true;
 	}
 	
+	/**
+	 * Skill is mostly flat fire damage with slightly random deviation
+	 * @param effectiveness
+	 * @return damage
+	 */
 	private int calculateDamage(float f) {
 		if (f <= .51f) {
 			System.out.println("It's not very effective...");

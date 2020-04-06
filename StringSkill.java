@@ -1,15 +1,33 @@
 package Maestus.Porkyman;
 
+/**
+ * Normal type move to fill in generic moves
+ * Used by many pockymon under different "names"
+ * @author Oracle
+ *
+ */
 public class StringSkill extends Skill {
 
+	/**
+	 * Constructs new skill for pockymon with a random name
+	 */
 	public StringSkill() {
 		super(randomName(), Type.NORMAL, 20, Target.FOE);
 	}
 	
+	/**
+	 * Constructs a new skill for pockymon with a pre-decided name
+	 * @param name
+	 */
 	public StringSkill(String n) {
 		super(n, Type.NORMAL, 20, Target.FOE);
 	}
 	
+	/**
+	 * Specifies how to execute skill
+	 * Does damage based on the average char value of the name which may be randomly generated
+	 * Hits single target
+	 */
 	@Override
 	boolean doIt(Pockymon caster, Pockymon... targets) {
 		int damage = calculateDamage(Type.effective(this.getType(), targets[0].getType1(), targets[0].getType2()));
@@ -19,6 +37,12 @@ public class StringSkill extends Skill {
 		return true;
 	}
 	
+	/**
+	 * The maximum damage is determined by the average ascii value of the attack's String name
+	 * By taking a bell curve, the damage has a normalizing effect and a distinct range of advantage
+	 * @param effectiveness
+	 * @return damage
+	 */
 	private int calculateDamage(float f) {
 		int sum_char = 0;
 		String s = getName();
@@ -42,6 +66,10 @@ public class StringSkill extends Skill {
 		return sum_char;
 	}
 	
+	/**
+	 * If default constructed, picks a random name from the list to assign as the attack name
+	 * @return name
+	 */
 	private static String randomName() {
 		String[] s = { "Headbutt", "Stomp", "Hyper Fang", "Body Slam", "Bite", "Swipe", "Scratch", "Lick", "Demean", "Rollout" };
 		int n = (int)(Math.floor(10 * Math.random()) % 10);

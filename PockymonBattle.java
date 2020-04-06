@@ -9,8 +9,9 @@ import java.util.Scanner;
 import Maestus.Porkyman.IAction.Target;
 
 public class PockymonBattle {
+	// TODO: Separate initialization from runtime logic
+	
 	private final Player[] participants;
-	// TODO: Oh god, please don't let array list be unindexed in a way that <1 2> is equivalent to <2 1>
 	private HashMap<Player, ArrayList<String>> options;
 	private HashMap<ArrayList<String>, ArrayList<Integer>> skillNum;
 	private HashMap<Integer, Integer> teams;
@@ -110,7 +111,7 @@ public class PockymonBattle {
 						
 						if (completelyExhausted) {
 							System.out.println(p.getPockymon().getNickname() + " passes out from sheer exhaustion.");
-							p.getPockymon().modHP(-999);
+							p.getPockymon().quitFighting();
 						}
 					}
 				//}

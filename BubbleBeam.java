@@ -1,11 +1,24 @@
 package Maestus.Porkyman;
 
+/**
+ * Water type skill for Mudkip
+ * @author Oracle
+ *
+ */
 public class BubbleBeam extends Skill {
 
+	/**
+	 * Constructs new skill for pockymon
+	 */
 	public BubbleBeam() {
 		super("Bubble Beam", Type.WATER, 25, Target.FOE);
 	}
 	
+	/**
+	 * Specifies how to execute skill
+	 * Hits one target
+	 * @return turnComplete
+	 */
 	@Override
 	boolean doIt(Pockymon caster, Pockymon... targets) {
 		int damage = calculateDamage(Type.effective(this.getType(), targets[0].getType1(), targets[0].getType2()));
@@ -15,6 +28,11 @@ public class BubbleBeam extends Skill {
 		return true;
 	}
 	
+	/**
+	 * Skill is flat water damage
+	 * @param effectiveness
+	 * @return damage
+	 */
 	private int calculateDamage(float f) {
 		if (f <= .51f) {
 			System.out.println("It's not very effective...");
